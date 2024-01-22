@@ -3,10 +3,10 @@ import nodemailer from "nodemailer";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch";
 
+// Load environment variables from .env file
 dotenv.config();
-console.log(process.env.USERNAME, process.env.PASS);
+
 const app = express();
 const port = 5001;
 
@@ -20,29 +20,37 @@ app.use(bodyParser.json());
 // Serve static files (you may need to adjust the path)
 app.use(express.static("public"));
 
+// Create a transporter using your email service credentials
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.USERNAME,
+    pass: process.env.PASS,
+  },
+});
+
 // Handle form submissions
 app.post("/submit-form", async (req, res) => {
   const { name, email, message } = req.body;
 
-  try {
-    // Forward the form data to the external API
-    const apiResponse = await fetch("http://3.82.151.217:5001/submit-form", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, message }),
-    });
+  // Define the email content
+  const mailOptions = {
+    from: email,
+    to: process.env.USERNAME,
+    subject: "New Form Submission",
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+  };
 
-    if (apiResponse.ok) {
-      console.log("Form submitted successfully!");
-      res.status(200).send("Form submitted successfully");
-    } else {
-      console.error("Form submission failed.", await apiResponse.text());
-      res.status(apiResponse.status).send("Form submission failed");
-    }
+  try {
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    res.status(200).send("Form submitted successfully");
   } catch (error) {
-    console.error("An error occurred during form submission:", error);
+    console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -52,4 +60,4 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-app.get("/", (req, res) => res.json("my API is running"));
+app.get("/", (req, res) => res.json("my api is running"));
