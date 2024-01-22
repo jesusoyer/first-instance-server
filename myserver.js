@@ -8,10 +8,10 @@ import dotenv from "dotenv";
 dotenv.config();
 console.log(process.env.USERNAME, process.env.PASS);
 const app = express();
-const port = 443;
+const port = 5001;
 
 // Enable CORS
-app.use(cors({ origin: "https://3.82.151.217:443" }));
+app.use(cors({ origin: "http://3.82.151.217:5001" }));
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
