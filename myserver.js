@@ -20,6 +20,12 @@ app.use(bodyParser.json());
 // Serve static files (you may need to adjust the path)
 app.use(express.static("public"));
 
+// Logging middleware to log incoming requests
+app.use((req, res, next) => {
+  console.log(`Received request: ${req.method} ${req.url}`);
+  next();
+});
+
 // Create a transporter using your email service credentials
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -34,6 +40,8 @@ const transporter = nodemailer.createTransport({
 
 // Handle form submissions
 app.post("/submit-form", async (req, res) => {
+  console.log("Received form submission:", req.body);
+
   const { name, email, message } = req.body;
 
   // Define the email content
