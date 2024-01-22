@@ -11,7 +11,7 @@ const app = express();
 const port = 5001;
 
 // Enable CORS
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "https://3.82.151.217:5001" }));
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
