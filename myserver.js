@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Handle form submissions
-app.post("/submit-form", async (req, res) => {
+app.post("http://3.82.151.217:5001/submit-form", async (req, res) => {
   console.log("Received form submission:", req.body);
 
   const { name, email, message } = req.body;
